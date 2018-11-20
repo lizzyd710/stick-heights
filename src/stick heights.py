@@ -74,5 +74,7 @@ def optical_flow(capture):
         old_gray = frame_gray.copy()
         p0 = good_new.reshape(-1, 1, 2)
 
+background_subtract(cap)
+
 cv2.destroyAllWindows()
 cap.release()
