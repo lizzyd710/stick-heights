@@ -2,6 +2,8 @@ import cv2
 import numpy as np
 
 cap = cv2.VideoCapture("videos/video-1542386591.mp4")
+out = cv2.VideoWriter('masks/video-1542386591_mask.mp4', cap.get(cv2.CAP_PROP_FOURCC), cap.get(cv2.CAP_PROP_FPS),
+                      (int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))))
 
 
 def background_subtract(capture):
@@ -17,12 +19,13 @@ def background_subtract(capture):
 
         # this is just showing each frame/mask. eventually i'll write it instead of showing it
         # so i can use the modified capture for tracking.
-        cv2.imshow('Frame', frame)
-        cv2.imshow('FG Mask', fg_mask)
+        # cv2.imshow('Frame', frame)
+        # cv2.imshow('FG Mask', fg_mask)
 
-        keyboard = cv2.waitKey(1)
-        if keyboard == 'q' or keyboard == 27:
-            break
+        # keyboard = cv2.waitKey(1)
+        # if keyboard == 'q' or keyboard == 27:
+            # break
+
 
 
 ##################################
