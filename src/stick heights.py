@@ -3,6 +3,7 @@ import numpy as np
 
 ##################################
 # All of this code is just copied from the Optical Flow tutorial site to use as a skeleton.
+# From abidrahmank/OpenCV2-Python-Tutorials on github.
 ##################################
 
 cap = cv2.VideoCapture("videos/video-1542386591.mp4")
