@@ -20,6 +20,10 @@ def background_subtract(capture):
         cv2.imshow('Frame', frame)
         cv2.imshow('FG Mask', fg_mask)
 
+        keyboard = cv2.waitKey(1)
+        if keyboard == 'q' or keyboard == 27:
+            break
+
 
 ##################################
 # All of this code is just copied from the Optical Flow tutorial site to use as a skeleton.
