@@ -77,7 +77,7 @@ def optical_flow(capture):
         img = cv2.add(frame, mask)
 
         cv2.imshow('frame', img)
-        k = cv2.waitKey(30) & 0xff
+        k = cv2.waitKey(15) & 0xff
         if k == 27:
             break
 
