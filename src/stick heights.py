@@ -2,11 +2,11 @@ import cv2
 import numpy as np
 
 cap = cv2.VideoCapture("videos/video-1542386591.mp4")
-width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-out = cv2.VideoWriter('masks/video-1542386591_mask.mp4', cap.get(cv2.CAP_PROP_FOURCC), cap.get(cv2.CAP_PROP_FPS),
-                      (width, height))
-
+width = int(cap.get(3))
+height = int(cap.get(4))
+fps = int(cap.get(5))
+fourcc = int(cap.get(cv2.CAP_PROP_FOURCC))
+out = cv2.VideoWriter('masks/video-1542386591_mask.mp4', fourcc, fps, (width, height))
 
 def background_subtract(capture):
     # create the background subtractor using the K-nearest neighbors algorithm.
