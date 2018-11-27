@@ -17,6 +17,9 @@ def background_subtract(capture):
         # update the background model
         fg_mask = back_sub.apply(frame)
 
+        # write the masked frame to the output file
+        out.write(fg_mask)
+
         # this is just showing each frame/mask. eventually i'll write it instead of showing it
         # so i can use the modified capture for tracking.
         # cv2.imshow('Frame', frame)
@@ -82,6 +85,7 @@ def optical_flow(capture):
         p0 = good_new.reshape(-1, 1, 2)
 
 background_subtract(cap)
+out.release()
 
 cv2.destroyAllWindows()
 cap.release()
