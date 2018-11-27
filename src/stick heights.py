@@ -6,9 +6,9 @@ width = int(cap.get(3))
 height = int(cap.get(4))
 fps = int(cap.get(5))
 fourcc = int(cap.get(cv2.CAP_PROP_FOURCC))
-out = cv2.VideoWriter('masks/video-1542386591_mask.mp4', fourcc, fps, (width, height))
+# out = cv2.VideoWriter('masks/video-1542386591_mask.mp4', fourcc, fps, (width, height))
 
-def background_subtract(capture):
+def background_subtract(capture, out):
     # create the background subtractor using the K-nearest neighbors algorithm.
     back_sub = cv2.createBackgroundSubtractorKNN()
 
@@ -30,7 +30,6 @@ def background_subtract(capture):
         # keyboard = cv2.waitKey(1)
         # if keyboard == 'q' or keyboard == 27:
             # break
-
 
 
 ##################################
@@ -86,8 +85,7 @@ def optical_flow(capture):
         old_gray = frame_gray.copy()
         p0 = good_new.reshape(-1, 1, 2)
 
-background_subtract(cap)
-out.release()
 
+optical_flow(cap)
 cv2.destroyAllWindows()
 cap.release()
