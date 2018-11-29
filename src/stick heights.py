@@ -2,15 +2,9 @@ import cv2
 import numpy as np
 import imutils
 from collections import deque
+import sys
 
 WAITKEY_DELAY = 60
-# cap = cv2.VideoCapture("videos/video-1543428726.mp4")
-cap = cv2.VideoCapture("videos/promo from youtube trim crop.mp4")
-width = int(cap.get(3))
-height = int(cap.get(4))
-fps = int(cap.get(5))
-fourcc = int(cap.get(cv2.CAP_PROP_FOURCC))
-# out = cv2.VideoWriter('masks/video-1543428726_mask.mp4', fourcc, fps, (width, height))
 
 def background_subtract(capture, out):
     # create the background subtractor using the K-nearest neighbors algorithm.
@@ -197,6 +191,7 @@ def track_sticks(capture, trail_length=None):
             break
 
 if __name__ == '__main__':
+    cap = cv2.VideoCapture(sys.argv[0])
     track_sticks(cap)
     cv2.destroyAllWindows()
     cap.release()
