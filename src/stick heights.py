@@ -8,7 +8,7 @@ width = int(cap.get(3))
 height = int(cap.get(4))
 fps = int(cap.get(5))
 fourcc = int(cap.get(cv2.CAP_PROP_FOURCC))
-out = cv2.VideoWriter('masks/video-1543428726_mask.mp4', fourcc, fps, (width, height))
+# out = cv2.VideoWriter('masks/video-1543428726_mask.mp4', fourcc, fps, (width, height))
 
 def background_subtract(capture, out):
     # create the background subtractor using the K-nearest neighbors algorithm.
@@ -133,8 +133,8 @@ def blob_track(capture):
 ##################################
 
 def track_sticks(capture):
-    tip_hsv_lower = () # 4 deg, 31%, 41%
-    tip_hsv_upper = () # 56 deg 18% 100%
+    tip_hsv_lower = (3, 79, 82)
+    tip_hsv_upper = (86, 168, 138)
     pts = deque()
 
     while True:
@@ -184,7 +184,7 @@ def track_sticks(capture):
             cv2.line(frame, pts[i-1], pts[i], (0, 0, 255), 5)
 
         cv2.imshow("Frame", frame)
-        key = cv2.waitKey(1) & 0xFF
+        key = cv2.waitKey(15) & 0xFF
         if key == ord("q"):
             break
 
