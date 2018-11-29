@@ -3,8 +3,9 @@ import numpy as np
 import imutils
 from collections import deque
 
-WAITKEY_DELAY = 15
-cap = cv2.VideoCapture("videos/video-1543428726.mp4")
+WAITKEY_DELAY = 60
+# cap = cv2.VideoCapture("videos/video-1543428726.mp4")
+cap = cv2.VideoCapture("videos/promo from youtube trim crop.mp4")
 width = int(cap.get(3))
 height = int(cap.get(4))
 fps = int(cap.get(5))
@@ -134,8 +135,8 @@ def blob_track(capture):
 ##################################
 
 def track_sticks(capture, trail_length=None):
-    tip_hsv_lower = (3, 79, 82)
-    tip_hsv_upper = (86, 168, 138)
+    tip_hsv_lower = (0,24,178) #(3, 79, 82)
+    tip_hsv_upper = (143,54,206)#(86, 168, 138)
     pts = deque(maxlen=trail_length)
 
     while True:
@@ -154,6 +155,7 @@ def track_sticks(capture, trail_length=None):
         mask = cv2.erode(mask, None, iterations=2)
         mask = cv2.dilate(mask, None, iterations=2)
 
+        cv2.imshow("Mask", mask)
         # compute contour # might not have in final, but again, copying now, experiment later.
         #find contours in mask and initialize the current (x, y) center of the ball
         cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -184,15 +186,17 @@ def track_sticks(capture, trail_length=None):
             # compute thickness of line (might not need to do this) and draw connecting lines
             cv2.line(frame, pts[i-1], pts[i], (0, 0, 255), 5)
 
+        cv2.namedWindow("Frame", cv2.WINDOW_NORMAL)
         cv2.imshow("Frame", frame)
 
         # if (capture.get(cv2.CAP_PROP_POS_FRAMES) == capture.get(cv2.CAP_PROP_FRAME_COUNT)):
-            # cv2.imwrite("temp name.jpg", frame)
+            # cv2.imwrite("temp name 2.jpg", frame)
 
         key = cv2.waitKey(WAITKEY_DELAY) & 0xFF
         if key == ord("q"):
             break
 
-track_sticks(cap)
-cv2.destroyAllWindows()
-cap.release()
+if __name__ == '__main__':
+    track_sticks(cap)
+    cv2.destroyAllWindows()
+    cap.release()
