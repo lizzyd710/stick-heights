@@ -186,7 +186,7 @@ def track_sticks(capture):
         cv2.imshow("Frame", frame)
 
         if (capture.get(cv2.CAP_PROP_POS_FRAMES) == capture.get(cv2.CAP_PROP_FRAME_COUNT)):
-            cv2.imwrite("temp name", frame)
+            cv2.imwrite("temp name.jpg", frame)
 
         key = cv2.waitKey(15) & 0xFF
         if key == ord("q"):
