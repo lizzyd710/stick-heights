@@ -3,6 +3,7 @@ import numpy as np
 import imutils
 from collections import deque
 
+WAITKEY_DELAY = 15
 cap = cv2.VideoCapture("videos/video-1543428726.mp4")
 width = int(cap.get(3))
 height = int(cap.get(4))
@@ -79,7 +80,7 @@ def optical_flow(capture):
         img = cv2.add(frame, mask)
 
         cv2.imshow('frame', img)
-        k = cv2.waitKey(15) & 0xff
+        k = cv2.waitKey(WAITKEY_DELAY) & 0xff
         if k == 27:
             break
 
@@ -118,7 +119,7 @@ def blob_track(capture):
             pts = np.intp(pts)
             img2 = cv2.polylines(frame, [pts], True, 255, 2)
             cv2.imshow('img2', img2)
-            k = cv2.waitKey(60) & 0xff
+            k = cv2.waitKey(WAITKEY_DELAY) & 0xff
             if k == 27:
                 break
             #else:
@@ -188,7 +189,7 @@ def track_sticks(capture):
         if (capture.get(cv2.CAP_PROP_POS_FRAMES) == capture.get(cv2.CAP_PROP_FRAME_COUNT)):
             cv2.imwrite("temp name.jpg", frame)
 
-        key = cv2.waitKey(15) & 0xFF
+        key = cv2.waitKey(WAITKEY_DELAY) & 0xFF
         if key == ord("q"):
             break
 
