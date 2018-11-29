@@ -133,10 +133,10 @@ def blob_track(capture):
 # https://www.pyimagesearch.com/2015/09/21/opencv-track-object-movement/
 ##################################
 
-def track_sticks(capture):
+def track_sticks(capture, trail_length=None):
     tip_hsv_lower = (3, 79, 82)
     tip_hsv_upper = (86, 168, 138)
-    pts = deque()
+    pts = deque(maxlen=trail_length)
 
     while True:
         ret, frame = capture.read()
@@ -186,8 +186,8 @@ def track_sticks(capture):
 
         cv2.imshow("Frame", frame)
 
-        if (capture.get(cv2.CAP_PROP_POS_FRAMES) == capture.get(cv2.CAP_PROP_FRAME_COUNT)):
-            cv2.imwrite("temp name.jpg", frame)
+        # if (capture.get(cv2.CAP_PROP_POS_FRAMES) == capture.get(cv2.CAP_PROP_FRAME_COUNT)):
+            # cv2.imwrite("temp name.jpg", frame)
 
         key = cv2.waitKey(WAITKEY_DELAY) & 0xFF
         if key == ord("q"):
