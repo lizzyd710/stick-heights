@@ -1,12 +1,14 @@
 import cv2
 import numpy as np
+import imutils
+from collections import deque
 
-cap = cv2.VideoCapture("videos/video-1542386591.mp4")
+cap = cv2.VideoCapture("videos/video-1543428726.mp4")
 width = int(cap.get(3))
 height = int(cap.get(4))
 fps = int(cap.get(5))
 fourcc = int(cap.get(cv2.CAP_PROP_FOURCC))
-# out = cv2.VideoWriter('masks/video-1542386591_mask.mp4', fourcc, fps, (width, height))
+out = cv2.VideoWriter('masks/video-1543428726_mask.mp4', fourcc, fps, (width, height))
 
 def background_subtract(capture, out):
     # create the background subtractor using the K-nearest neighbors algorithm.
@@ -124,6 +126,68 @@ def blob_track(capture):
         else:
             break
 
-optical_flow(cap)
+
+##################################
+# This is copied from a tutorial to use as a skeleton.
+# https://www.pyimagesearch.com/2015/09/21/opencv-track-object-movement/
+##################################
+
+def track_sticks(capture):
+    tip_hsv_lower = () # 4 deg, 31%, 41%
+    tip_hsv_upper = () # 56 deg 18% 100%
+    pts = deque()
+
+    while True:
+        ret, frame = capture.read()
+
+        if frame is None:
+            break
+
+        #resize frame, blur, convert to HSV
+        frame = imutils.resize(frame, width=600) #might play around with this later. just copied from tut right now.
+        blurred = cv2.GaussianBlur(frame, (11, 11), 0)
+        hsv = cv2.cvtColor(blurred, cv2.COLOR_BGR2HSV)
+
+        # construct a mask for the color, then perform dilations and erosions to remove small blobs
+        mask = cv2.inRange(hsv, tip_hsv_lower, tip_hsv_upper)
+        mask = cv2.erode(mask, None, iterations=2)
+        mask = cv2.dilate(mask, None, iterations=2)
+
+        # compute contour # might not have in final, but again, copying now, experiment later.
+        #find contours in mask and initialize the current (x, y) center of the ball
+        cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        cnts = cnts[0] if imutils.is_cv2() else cnts[1]
+        center = None
+
+        # only proceed if at least one contour was found
+        if len(cnts) > 0:
+            # find the largest contour in the mask, then use it to compute
+            # the minimum enclosing circle and centroid
+            c = max(cnts, key=cv2.contourArea)
+            ((x,y), radius) = cv2.minEnclosingCircle(c)
+            M = cv2.moments(c)
+            center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
+
+            # only proceed if radius meets minimum size
+            if radius > 10:
+                # draw the circle and centroid on the frame,
+                # then update the list of tracked points
+                cv2.circle(frame, (int(x), int(y)), int(radius),(0, 255, 255), 2)
+                cv2.circle(frame, center, 5, (0, 0, 255), -1)
+        pts.appendleft(center)
+
+        # loop over set of tracked points
+        for i in range(1, len(pts)):
+            if pts[i-1] is None or pts[i] is None:
+                continue
+            # compute thickness of line (might not need to do this) and draw connecting lines
+            cv2.line(frame, pts[i-1], pts[i], (0, 0, 255), 5)
+
+        cv2.imshow("Frame", frame)
+        key = cv2.waitKey(1) & 0xFF
+        if key == ord("q"):
+            break
+
+track_sticks(cap)
 cv2.destroyAllWindows()
 cap.release()
