@@ -184,6 +184,10 @@ def track_sticks(capture):
             cv2.line(frame, pts[i-1], pts[i], (0, 0, 255), 5)
 
         cv2.imshow("Frame", frame)
+
+        if (capture.get(cv2.CAP_PROP_POS_FRAMES) == capture.get(cv2.CAP_PROP_FRAME_COUNT)):
+            cv2.imwrite("temp name", frame)
+
         key = cv2.waitKey(15) & 0xFF
         if key == ord("q"):
             break
