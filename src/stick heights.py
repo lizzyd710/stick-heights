@@ -6,6 +6,7 @@ import sys
 
 WAITKEY_DELAY = 60
 
+
 def background_subtract(capture, out):
     # create the background subtractor using the K-nearest neighbors algorithm.
     back_sub = cv2.createBackgroundSubtractorKNN()
@@ -27,7 +28,7 @@ def background_subtract(capture, out):
 
         # keyboard = cv2.waitKey(1)
         # if keyboard == 'q' or keyboard == 27:
-            # break
+        # break
 
 
 ##################################
@@ -42,7 +43,7 @@ def optical_flow(capture):
 
     # Parameters for lucas kanade optical flow
     lk_params = dict(winSize=(15, 15), maxLevel=2,
-                    criteria=(cv2.TERM_CRITERIA_EPS | cv2.TERM_CRITERIA_COUNT, 10, 0.03))
+                     criteria=(cv2.TERM_CRITERIA_EPS | cv2.TERM_CRITERIA_COUNT, 10, 0.03))
 
     # Create some random colors
     color = np.random.randint(0, 255, (100, 3))
@@ -83,6 +84,7 @@ def optical_flow(capture):
         old_gray = frame_gray.copy()
         p0 = good_new.reshape(-1, 1, 2)
 
+
 ##################################
 # This is copied from an opencv tutorial to use as a skeleton.
 # https://docs.opencv.org/3.4/db/df8/tutorial_py_meanshift.html
@@ -117,8 +119,8 @@ def blob_track(capture):
             k = cv2.waitKey(WAITKEY_DELAY) & 0xff
             if k == 27:
                 break
-            #else:
-                #cv2.imwrite(chr(k) + ".jpg", img2)
+                # else:
+                # cv2.imwrite(chr(k) + ".jpg", img2)
         else:
             break
 
@@ -129,8 +131,8 @@ def blob_track(capture):
 ##################################
 
 def track_sticks(capture, trail_length=None):
-    tip_hsv_lower = (0,24,178) #(3, 79, 82)
-    tip_hsv_upper = (143,54,206)#(86, 168, 138)
+    tip_hsv_lower = (0, 24, 178)  # (3, 79, 82)
+    tip_hsv_upper = (143, 54, 206)  # (86, 168, 138)
     pts = deque(maxlen=trail_length)
 
     while True:
@@ -139,8 +141,8 @@ def track_sticks(capture, trail_length=None):
         if frame is None:
             break
 
-        #resize frame, blur, convert to HSV
-        frame = imutils.resize(frame, width=600) #might play around with this later. just copied from tut right now.
+        # resize frame, blur, convert to HSV
+        frame = imutils.resize(frame, width=600)  # might play around with this later. just copied from tut right now.
         blurred = cv2.GaussianBlur(frame, (11, 11), 0)
         hsv = cv2.cvtColor(blurred, cv2.COLOR_BGR2HSV)
 
@@ -151,7 +153,7 @@ def track_sticks(capture, trail_length=None):
 
         cv2.imshow("Mask", mask)
         # compute contour # might not have in final, but again, copying now, experiment later.
-        #find contours in mask and initialize the current (x, y) center of the ball
+        # find contours in mask and initialize the current (x, y) center of the ball
         cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         cnts = cnts[0] if imutils.is_cv2() else cnts[1]
         center = None
@@ -161,7 +163,7 @@ def track_sticks(capture, trail_length=None):
             # find the largest contour in the mask, then use it to compute
             # the minimum enclosing circle and centroid
             c = max(cnts, key=cv2.contourArea)
-            ((x,y), radius) = cv2.minEnclosingCircle(c)
+            ((x, y), radius) = cv2.minEnclosingCircle(c)
             M = cv2.moments(c)
             center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
 
@@ -169,29 +171,31 @@ def track_sticks(capture, trail_length=None):
             if radius > 10:
                 # draw the circle and centroid on the frame,
                 # then update the list of tracked points
-                cv2.circle(frame, (int(x), int(y)), int(radius),(0, 255, 255), 2)
+                cv2.circle(frame, (int(x), int(y)), int(radius), (0, 255, 255), 2)
                 cv2.circle(frame, center, 5, (0, 0, 255), -1)
         pts.appendleft(center)
 
         # loop over set of tracked points
         for i in range(1, len(pts)):
-            if pts[i-1] is None or pts[i] is None:
+            if pts[i - 1] is None or pts[i] is None:
                 continue
             # compute thickness of line (might not need to do this) and draw connecting lines
-            cv2.line(frame, pts[i-1], pts[i], (0, 0, 255), 5)
+            cv2.line(frame, pts[i - 1], pts[i], (0, 0, 255), 5)
 
         cv2.namedWindow("Frame", cv2.WINDOW_NORMAL)
         cv2.imshow("Frame", frame)
 
         # if (capture.get(cv2.CAP_PROP_POS_FRAMES) == capture.get(cv2.CAP_PROP_FRAME_COUNT)):
-            # cv2.imwrite("temp name 2.jpg", frame)
+        # cv2.imwrite("temp name 2.jpg", frame)
 
         key = cv2.waitKey(WAITKEY_DELAY) & 0xFF
         if key == ord("q"):
             break
 
+
 if __name__ == '__main__':
-    cap = cv2.VideoCapture(sys.argv[0])
+    cap = cv2.VideoCapture('videos/orange-sticks.mp4')
+    print(cap.isOpened())
     track_sticks(cap)
     cv2.destroyAllWindows()
     cap.release()
