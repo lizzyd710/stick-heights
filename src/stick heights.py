@@ -130,9 +130,9 @@ def blob_track(capture):
 # https://www.pyimagesearch.com/2015/09/21/opencv-track-object-movement/
 ##################################
 
-def track_sticks(capture, trail_length=None):
-    tip_hsv_lower = (0, 24, 178)  # (3, 79, 82)
-    tip_hsv_upper = (143, 54, 206)  # (86, 168, 138)
+def track_sticks(capture, tip_hsv_lower, tip_hsv_upper, trail_length=None):
+    # tip_hsv_lower = (12, 82, 169)  # (3, 79, 82)
+    # tip_hsv_upper = (66, 180, 222)  # (86, 168, 138)
     pts = deque(maxlen=trail_length)
 
     while True:
@@ -196,6 +196,12 @@ def track_sticks(capture, trail_length=None):
 if __name__ == '__main__':
     cap = cv2.VideoCapture('videos/orange-sticks.mp4')
     print(cap.isOpened())
-    track_sticks(cap)
+    lower = input("Enter lower value for HSV (format: H,S,V): ")
+    lower = lower.split(",")
+    lower = (int(lower[0]), int(lower[1]), int(lower[2]))
+    upper = input("Enter upper value for HSV (format: H,S,V): ")
+    upper = upper.split(",")
+    upper = (int(upper[0]), int(upper[1]), int(upper[2]))
+    track_sticks(cap, lower, upper)
     cv2.destroyAllWindows()
     cap.release()
